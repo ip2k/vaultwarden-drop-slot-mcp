@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.tgz
+.env
+.env.*
+!.env.example
+secrets/
+state/
+*.sqlite*
+coverage/
+*.key
+*.pem
+!test/fixtures/*.pem
