@@ -1,0 +1,32 @@
+name: Verify
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['24', '26']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: node scripts/contracts.mjs && git diff --exit-code -- docs/openapi.json docs/tool-manifest.json
+      - run: npm pack --dry-run
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: docker compose -f test/compose.acceptance.yaml build acceptance
+      - run: docker compose -f test/compose.acceptance.yaml up --abort-on-container-exit --exit-code-from acceptance
+      - if: always()
+        run: docker compose -f test/compose.acceptance.yaml down --volumes

@@ -1,0 +1,48 @@
+{
+  "score": 88,
+  "base_image": {
+    "image": "runtime",
+    "tag": "latest",
+    "estimated_size_mb": 0,
+    "is_alpine": false,
+    "is_slim": false,
+    "is_distroless": false
+  },
+  "layers": {
+    "total_layers": 29,
+    "stages": 8,
+    "is_multistage": true,
+    "run_count": 9,
+    "copy_count": 12,
+    "add_count": 0
+  },
+  "findings": [
+    {
+      "id": "AP006",
+      "severity": "medium",
+      "message": "Multiple CMD instructions \u2014 only the last one takes effect",
+      "fix": "Keep exactly one CMD instruction",
+      "line": "2 CMD instructions found"
+    },
+    {
+      "id": "AP014",
+      "severity": "medium",
+      "message": "No HEALTHCHECK instruction \u2014 orchestrators can't determine container health",
+      "fix": "Add HEALTHCHECK CMD curl -f http://localhost:PORT/health || exit 1",
+      "line": "(no HEALTHCHECK instruction found)"
+    },
+    {
+      "id": "AP013",
+      "severity": "low",
+      "message": "Download without cleanup \u2014 downloaded archives may remain in layer",
+      "fix": "Download, extract, and remove archive in the same RUN instruction",
+      "line": "RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates"
+    }
+  ],
+  "finding_counts": {
+    "critical": 0,
+    "high": 0,
+    "medium": 2,
+    "low": 1
+  }
+}

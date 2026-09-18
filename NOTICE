@@ -1,0 +1,14 @@
+vaultwarden-drop-slot-mcp
+Copyright 2026 vaultwarden-drop-slot-mcp contributors
+
+Original code is licensed under Apache-2.0.
+This project is not affiliated with Bitwarden Inc. or the Vaultwarden project.
+
+The optional importer Docker target includes the unmodified OSS Bitwarden CLI
+2026.8.0 as a separate GPL-3.0 executable. Its complete corresponding source is
+at https://github.com/bitwarden/clients/tree/cli-v2026.8.0 and the release at
+https://github.com/bitwarden/clients/releases/tag/cli-v2026.8.0.
+Before distributing importer images, provide corresponding source in accordance
+with the CLI's license. The default image and npm tarball do not bundle this CLI.
+
+Dependency licenses and acquisition details are recorded in docs/DEPENDENCIES.md.

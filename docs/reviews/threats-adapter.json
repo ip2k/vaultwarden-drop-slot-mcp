@@ -1,0 +1,190 @@
+{
+  "component": "Authentication",
+  "analysis_date": "2026-09-17T22:57:53.963293",
+  "summary": {
+    "total_threats": 7,
+    "by_risk_level": {
+      "critical": 1,
+      "high": 3,
+      "medium": 3,
+      "low": 0
+    }
+  },
+  "threats": [
+    {
+      "category": "Spoofing",
+      "name": "Credential Theft",
+      "description": "Attacker obtains valid credentials through phishing or theft",
+      "attack_vector": "Phishing emails, keyloggers, credential stuffing",
+      "impact": "Full account compromise, data access",
+      "likelihood": 4,
+      "severity": 5,
+      "risk_score": 20,
+      "risk_level": "Critical",
+      "dread": {
+        "damage": 10,
+        "reproducibility": 8,
+        "exploitability": 8,
+        "affected_users": 8,
+        "discoverability": 7,
+        "total": 8.2
+      },
+      "mitigations": [
+        "Implement multi-factor authentication (MFA)",
+        "Use phishing-resistant authentication (FIDO2/WebAuthn)",
+        "Deploy credential monitoring and breach detection",
+        "Enforce strong password policies with complexity requirements"
+      ]
+    },
+    {
+      "category": "Tampering",
+      "name": "JWT Token Manipulation",
+      "description": "Attacker modifies JWT claims or signature",
+      "attack_vector": "Algorithm confusion, weak secrets, none algorithm",
+      "impact": "Privilege escalation, identity spoofing",
+      "likelihood": 3,
+      "severity": 5,
+      "risk_score": 15,
+      "risk_level": "High",
+      "dread": {
+        "damage": 10,
+        "reproducibility": 5,
+        "exploitability": 6,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 6.6
+      },
+      "mitigations": [
+        "Use asymmetric algorithms (RS256, ES256)",
+        "Validate algorithm in code, not from token",
+        "Implement proper key management",
+        "Add expiration and audience validation"
+      ]
+    },
+    {
+      "category": "Spoofing",
+      "name": "Session Hijacking",
+      "description": "Attacker steals or predicts session tokens",
+      "attack_vector": "XSS, network sniffing, session fixation",
+      "impact": "Unauthorized access to user session",
+      "likelihood": 3,
+      "severity": 4,
+      "risk_score": 12,
+      "risk_level": "High",
+      "dread": {
+        "damage": 8,
+        "reproducibility": 5,
+        "exploitability": 6,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 6.2
+      },
+      "mitigations": [
+        "Use secure, HttpOnly, SameSite cookies",
+        "Implement session binding (IP, user agent)",
+        "Rotate session tokens after authentication",
+        "Use short session timeouts for sensitive operations"
+      ]
+    },
+    {
+      "category": "Denial of Service",
+      "name": "Authentication Brute Force",
+      "description": "Attacker overwhelms authentication service",
+      "attack_vector": "Distributed credential stuffing, password spraying",
+      "impact": "Service unavailability, account lockouts",
+      "likelihood": 4,
+      "severity": 3,
+      "risk_score": 12,
+      "risk_level": "High",
+      "dread": {
+        "damage": 6,
+        "reproducibility": 8,
+        "exploitability": 8,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 6.8
+      },
+      "mitigations": [
+        "Implement progressive rate limiting",
+        "Use CAPTCHA after failed attempts",
+        "Deploy account lockout with notification",
+        "Use distributed denial of service protection"
+      ]
+    },
+    {
+      "category": "Information Disclosure",
+      "name": "Password Hash Exposure",
+      "description": "Password hashes leaked through breach or injection",
+      "attack_vector": "SQL injection, backup exposure, insider threat",
+      "impact": "Mass credential compromise",
+      "likelihood": 2,
+      "severity": 5,
+      "risk_score": 10,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 10,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 8,
+        "discoverability": 4,
+        "total": 6.2
+      },
+      "mitigations": [
+        "Use strong password hashing (Argon2id, bcrypt)",
+        "Implement database encryption at rest",
+        "Apply parameterized queries everywhere",
+        "Segment database access by function"
+      ]
+    },
+    {
+      "category": "Elevation of Privilege",
+      "name": "Privilege Escalation via Auth Bypass",
+      "description": "Attacker gains admin access through auth flaws",
+      "attack_vector": "IDOR, insecure direct object references, role confusion",
+      "impact": "Full system compromise",
+      "likelihood": 2,
+      "severity": 5,
+      "risk_score": 10,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 10,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 8,
+        "discoverability": 4,
+        "total": 6.2
+      },
+      "mitigations": [
+        "Implement server-side authorization checks",
+        "Use role-based access control (RBAC)",
+        "Validate permissions on every request",
+        "Audit privilege changes"
+      ]
+    },
+    {
+      "category": "Repudiation",
+      "name": "Authentication Event Denial",
+      "description": "User denies performing authentication actions",
+      "attack_vector": "Claim of compromised credentials",
+      "impact": "Dispute resolution difficulty, fraud",
+      "likelihood": 2,
+      "severity": 3,
+      "risk_score": 6,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 6,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 5,
+        "discoverability": 4,
+        "total": 4.8
+      },
+      "mitigations": [
+        "Log all authentication events with timestamps",
+        "Capture device fingerprints and IP addresses",
+        "Implement tamper-evident audit logs",
+        "Use digital signatures for critical actions"
+      ]
+    }
+  ]
+}

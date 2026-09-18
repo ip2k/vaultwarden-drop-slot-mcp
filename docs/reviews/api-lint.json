@@ -1,0 +1,62 @@
+{
+  "summary": {
+    "total_endpoints": 3,
+    "endpoints_with_issues": 1,
+    "total_issues": 7,
+    "errors": 0,
+    "warnings": 5,
+    "info": 2,
+    "score": 94.33
+  },
+  "issues": [
+    {
+      "severity": "info",
+      "category": "responses",
+      "message": "Uncommon status code 202 for POST /v1/deposits",
+      "path": "/paths//v1/deposits/post/responses/202",
+      "suggestion": "Consider using standard codes for POST: [200, 201, 400, 409, 422]"
+    },
+    {
+      "severity": "info",
+      "category": "responses",
+      "message": "Uncommon status code 413 for POST /v1/deposits",
+      "path": "/paths//v1/deposits/post/responses/413",
+      "suggestion": "Consider using standard codes for POST: [200, 201, 400, 409, 422]"
+    },
+    {
+      "severity": "warning",
+      "category": "naming",
+      "message": "Property 'key_id' in schema 'Envelope' should use camelCase",
+      "path": "/components/schemas/Envelope/properties/key_id",
+      "suggestion": "Use camelCase for property names (e.g., 'firstName', 'createdAt')"
+    },
+    {
+      "severity": "warning",
+      "category": "naming",
+      "message": "Property 'request_id' in schema 'Envelope' should use camelCase",
+      "path": "/components/schemas/Envelope/properties/request_id",
+      "suggestion": "Use camelCase for property names (e.g., 'firstName', 'createdAt')"
+    },
+    {
+      "severity": "warning",
+      "category": "naming",
+      "message": "Property 'key_id' in schema 'Recipient' should use camelCase",
+      "path": "/components/schemas/Recipient/properties/key_id",
+      "suggestion": "Use camelCase for property names (e.g., 'firstName', 'createdAt')"
+    },
+    {
+      "severity": "warning",
+      "category": "naming",
+      "message": "Property 'writer_id' in schema 'EncryptedDocument' should use camelCase",
+      "path": "/components/schemas/EncryptedDocument/properties/writer_id",
+      "suggestion": "Use camelCase for property names (e.g., 'firstName', 'createdAt')"
+    },
+    {
+      "severity": "warning",
+      "category": "naming",
+      "message": "Property 'request_id' in schema 'EncryptedDocument' should use camelCase",
+      "path": "/components/schemas/EncryptedDocument/properties/request_id",
+      "suggestion": "Use camelCase for property names (e.g., 'firstName', 'createdAt')"
+    }
+  ]
+}

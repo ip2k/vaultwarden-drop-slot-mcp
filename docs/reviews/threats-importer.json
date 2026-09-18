@@ -1,0 +1,90 @@
+{
+  "component": "Database",
+  "analysis_date": "2026-09-17T22:57:54.035532",
+  "summary": {
+    "total_threats": 3,
+    "by_risk_level": {
+      "critical": 0,
+      "high": 1,
+      "medium": 2,
+      "low": 0
+    }
+  },
+  "threats": [
+    {
+      "category": "Tampering",
+      "name": "SQL Injection",
+      "description": "Attacker injects malicious SQL commands",
+      "attack_vector": "Input fields, URL parameters, headers",
+      "impact": "Data theft, modification, destruction",
+      "likelihood": 3,
+      "severity": 5,
+      "risk_score": 15,
+      "risk_level": "High",
+      "dread": {
+        "damage": 10,
+        "reproducibility": 5,
+        "exploitability": 6,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 6.6
+      },
+      "mitigations": [
+        "Use parameterized queries exclusively",
+        "Apply input validation and sanitization",
+        "Implement least privilege database accounts",
+        "Deploy web application firewall (WAF)"
+      ]
+    },
+    {
+      "category": "Information Disclosure",
+      "name": "Unencrypted Data at Rest",
+      "description": "Sensitive data stored without encryption",
+      "attack_vector": "Physical theft, backup exposure, insider threat",
+      "impact": "Mass data breach",
+      "likelihood": 2,
+      "severity": 5,
+      "risk_score": 10,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 10,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 8,
+        "discoverability": 4,
+        "total": 6.2
+      },
+      "mitigations": [
+        "Implement transparent data encryption (TDE)",
+        "Use field-level encryption for PII",
+        "Encrypt database backups",
+        "Manage encryption keys securely"
+      ]
+    },
+    {
+      "category": "Repudiation",
+      "name": "Audit Log Tampering",
+      "description": "Attacker modifies or deletes database logs",
+      "attack_vector": "SQL injection, admin access, log rotation",
+      "impact": "Cannot prove what actions occurred",
+      "likelihood": 2,
+      "severity": 4,
+      "risk_score": 8,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 8,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 5,
+        "discoverability": 4,
+        "total": 5.2
+      },
+      "mitigations": [
+        "Write audit logs to immutable storage",
+        "Implement cryptographic log chaining",
+        "Use separate audit database with restricted access",
+        "Monitor for log gaps and anomalies"
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ Apache-2.0. Keep private LAN configuration, credentials and deployment details
 in lan-compute, outside this public package.
 
 Approved skills: API Design Reviewer, Docker Development, engineering Code
-Review, Senior Security (STRIDE threat modeling and secret scanning), and
+Review, MCP Server Builder, Senior Security (STRIDE threat modeling and secret scanning), and
 lan-compute for deployment. User approved security design advisor skills on
 2026-09-17. Additional skills require the owner's approval.
 
@@ -24,5 +24,7 @@ Verification: npm ci --ignore-scripts; npm test; npm run build; npm pack --dry-r
 Security-sensitive changes need threat-model and acceptance-test updates.
 Record real-vault enrollment and client checks as pending until demonstrated.
 
-Repository hygiene: new project baseline 2026-09-17, 0 source lines, initial
-commit (before implementation). Audit after roughly 10,000 added source lines.
+Repository hygiene: read end to end for dead code, obsolete checks and unneeded
+legacy support on 2026-09-18: 672 production TypeScript lines, commit `a4cfd69`.
+No legacy compatibility layer retained. Next audit after roughly 10,000 added
+production source lines (about 10,672 total).
