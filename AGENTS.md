@@ -24,5 +24,7 @@ Verification: npm ci --ignore-scripts; npm test; npm run build; npm pack --dry-r
 Security-sensitive changes need threat-model and acceptance-test updates.
 Record real-vault enrollment and client checks as pending until demonstrated.
 
-Repository hygiene: new project baseline 2026-09-17, 0 source lines, initial
-commit (before implementation). Audit after roughly 10,000 added source lines.
+Repository hygiene: read end to end for dead code, obsolete checks and unneeded
+legacy support on 2026-09-18: 672 production TypeScript lines, commit `a4cfd69`.
+No legacy compatibility layer retained. Next audit after roughly 10,000 added
+production source lines (about 10,672 total).
