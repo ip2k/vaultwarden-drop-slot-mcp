@@ -2,7 +2,7 @@ name: vaultwarden-drop-slot
 services:
   inbox:
     image: vaultwarden-drop-slot-mcp:0.1.0
-    build: { context: .., target: runtime }
+    build: { context: "${DROP_SLOT_SOURCE_DIR:-..}", target: runtime }
     command: [inbox, /config/inbox.json]
     ports: ["127.0.0.1:8443:8443"]
     volumes:
@@ -28,7 +28,7 @@ services:
   importer:
     profiles: [importer]
     image: vaultwarden-drop-slot-importer:0.1.0
-    build: { context: .., target: importer }
+    build: { context: "${DROP_SLOT_SOURCE_DIR:-..}", target: importer }
     command: [importer, /config/importer.json]
     depends_on: { inbox: { condition: service_healthy } }
     volumes:
