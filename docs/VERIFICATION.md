@@ -1,6 +1,6 @@
 # Verification record
 
-Pre-release verification on 2026-09-17. These are measured checks, not a claim of
+Verification on 2026-09-17 and 2026-09-18. These are measured checks, not a claim of
 independent audit or universal Vaultwarden/client compatibility.
 
 | Check | Result |
@@ -31,21 +31,23 @@ see DECISIONS.md for the compatibility decision.
 
 ## Deployment and release boundaries
 
-The first private installation has a running sealed inbox, verified HTTPS,
-unauthenticated rejection and an authenticated synthetic deposit/replay/status
-check. Its owner has **not enrolled the dedicated vault account**, so the private
-importer is disabled and real delivery remains pending. A queued receipt does
-not mean the secret is in a vault. Private addresses/configuration are maintained
-in the separate infrastructure repository.
+The first private installation is enrolled and delivering to a dedicated
+organization and collection. On 2026-09-18, a synthetic login and secure note
+both returned imported receipts, matched exact content on private CLI read-back,
+and remained single items after retries. A prior smoke deposit also reconciled
+after restart. The owner confirmed the items looked correct in their normal
+client. Private addresses, account names, IDs and configuration remain in the
+separate infrastructure repository. A queued receipt alone is not proof of
+vault delivery.
 
 Hosted Claude/ChatGPT OAuth enrollment has not been demonstrated. The remote
 adapter's JWT, discovery, principal binding, origin and direct-call behavior were
 tested locally; deployments still need a compatible issuer, client registration
-and reachable HTTPS endpoint. Arm64 image execution and mobile/desktop Bitwarden
-UI checks have not been run. Do not extend the tested compatibility claim to them.
+and reachable HTTPS endpoint. Arm64 image execution and specific mobile/desktop Bitwarden
+app-version checks have not been run. Do not extend the tested compatibility claim to them.
 
-GitHub/npm publication and public importer-image redistribution are not performed
-by building this package. The optional GPL CLI binary is absent from the npm
+Source is published on GitHub. npm registry publication and public importer-image
+redistribution are separate release steps, not performed by building this package. The optional GPL CLI binary is absent from the npm
 package and default image; public importer distribution needs a complete-source
 compliance procedure described in DEPENDENCIES.md.
 

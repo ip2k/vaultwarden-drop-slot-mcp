@@ -1,5 +1,8 @@
 # Enrollment
 
+For a first installation, follow the [step-by-step setup walkthrough](SETUP.md).
+This page explains enrollment material, trust boundaries and additional writers.
+
 Generate material on an owner-controlled machine with the installed executable:
 
 ```sh
