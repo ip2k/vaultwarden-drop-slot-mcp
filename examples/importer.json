@@ -1,0 +1,21 @@
+{
+  "worker_url": "https://inbox:8444",
+  "token_file": "/run/secrets/importer-token.txt",
+  "ca_file": "/tls/ca.crt",
+  "identity_files": ["/run/secrets/identity.txt"],
+  "ledger": "/state/delivery.sqlite",
+  "bw_path": "/usr/local/bin/bw",
+  "bw_sha256": "REPLACE_WITH_BINARY_HASH_FROM_IMPORTER_IMAGE",
+  "bw_version": "2026.8.0",
+  "bw_state_dir": "/bw",
+  "session_file": "/run/secrets/session.txt",
+  "vault_url": "https://vault.example.com",
+  "destinations": {
+    "default": {
+      "mode": "organization",
+      "organization_id": "REPLACE_WITH_ORGANIZATION_UUID",
+      "collection_ids": ["REPLACE_WITH_COLLECTION_UUID"]
+    }
+  },
+  "poll_ms": 5000
+}

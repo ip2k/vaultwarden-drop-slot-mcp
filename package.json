@@ -1,0 +1,66 @@
+{
+  "name": "vaultwarden-drop-slot-mcp",
+  "version": "0.1.0",
+  "description": "Create-only, age-encrypted credential deposits for Vaultwarden through MCP, CLI, and Node.js.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.2.0"
+  },
+  "bin": {
+    "vaultwarden-drop-slot-mcp": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "examples",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "SECURITY.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ip2k/vaultwarden-drop-slot-mcp.git"
+  },
+  "homepage": "https://github.com/ip2k/vaultwarden-drop-slot-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/ip2k/vaultwarden-drop-slot-mcp/issues"
+  },
+  "keywords": [
+    "vaultwarden",
+    "bitwarden",
+    "mcp",
+    "age",
+    "secrets",
+    "write-only"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test --test-concurrency=1 test/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "age-encryption": "0.3.1",
+    "express": "5.2.1",
+    "jose": "6.2.12",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "24.13.5",
+    "playwright": "1.63.0",
+    "typescript": "7.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

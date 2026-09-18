@@ -5,7 +5,7 @@ Apache-2.0. Keep private LAN configuration, credentials and deployment details
 in lan-compute, outside this public package.
 
 Approved skills: API Design Reviewer, Docker Development, engineering Code
-Review, Senior Security (STRIDE threat modeling and secret scanning), and
+Review, MCP Server Builder, Senior Security (STRIDE threat modeling and secret scanning), and
 lan-compute for deployment. User approved security design advisor skills on
 2026-09-17. Additional skills require the owner's approval.
 

@@ -1,0 +1,74 @@
+{
+  "overall": {
+    "score": 67.35,
+    "grade": "D",
+    "totalEndpoints": 3
+  },
+  "api_info": {
+    "title": "Vaultwarden Drop Slot Inbox",
+    "version": "1.0.0",
+    "description": "Authenticated, create-only encrypted deposits. No vault read, search, edit, or delete operations. Recipients are pinned during enrollment; fetching a key never authorizes its replacement. JSON bodies are at most 256 KiB. Errors never include submitted values.",
+    "total_paths": 3,
+    "openapi_version": "3.1.0"
+  },
+  "categories": {
+    "consistency": {
+      "score": 92.97,
+      "grade": "A",
+      "weight": 30.0,
+      "weightedScore": 27.89,
+      "issues": [],
+      "recommendations": []
+    },
+    "documentation": {
+      "score": 68.06,
+      "grade": "D",
+      "weight": 20.0,
+      "weightedScore": 13.61,
+      "issues": [],
+      "recommendations": [
+        "Improve documentation completeness for some endpoints",
+        "Add more examples to enhance developer experience"
+      ]
+    },
+    "security": {
+      "score": 80.0,
+      "grade": "B",
+      "weight": 20.0,
+      "weightedScore": 16.0,
+      "issues": [],
+      "recommendations": []
+    },
+    "usability": {
+      "score": 51.67,
+      "grade": "F",
+      "weight": 15.0,
+      "weightedScore": 7.75,
+      "issues": [],
+      "recommendations": [
+        "Improve error messages with actionable guidance",
+        "Add filtering and search capabilities to list endpoints",
+        "Enhance resource discoverability with better linking"
+      ]
+    },
+    "performance": {
+      "score": 14.0,
+      "grade": "F",
+      "weight": 15.0,
+      "weightedScore": 2.1,
+      "issues": [],
+      "recommendations": [
+        "Implement pagination for list endpoints",
+        "Add caching headers for cacheable responses",
+        "Consider batch operations for bulk updates"
+      ]
+    }
+  },
+  "topRecommendations": [
+    "Documentation: Improve documentation completeness for some endpoints",
+    "Documentation: Add more examples to enhance developer experience",
+    "Usability: Improve error messages with actionable guidance",
+    "Usability: Add filtering and search capabilities to list endpoints",
+    "Performance: Implement pagination for list endpoints"
+  ]
+}

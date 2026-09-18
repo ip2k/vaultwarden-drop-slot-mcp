@@ -1,0 +1,165 @@
+{
+  "component": "API Gateway",
+  "analysis_date": "2026-09-17T22:57:53.908461",
+  "summary": {
+    "total_threats": 6,
+    "by_risk_level": {
+      "critical": 0,
+      "high": 3,
+      "medium": 3,
+      "low": 0
+    }
+  },
+  "threats": [
+    {
+      "category": "Spoofing",
+      "name": "API Key Impersonation",
+      "description": "Attacker uses stolen or leaked API keys",
+      "attack_vector": "GitHub exposure, client-side storage, logging",
+      "impact": "Unauthorized API access, data theft",
+      "likelihood": 4,
+      "severity": 4,
+      "risk_score": 16,
+      "risk_level": "High",
+      "dread": {
+        "damage": 8,
+        "reproducibility": 8,
+        "exploitability": 8,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 7.2
+      },
+      "mitigations": [
+        "Implement API key rotation policies",
+        "Use short-lived tokens where possible",
+        "Monitor for exposed secrets in repositories",
+        "Implement IP allowlisting for API keys"
+      ]
+    },
+    {
+      "category": "Information Disclosure",
+      "name": "Excessive Data Exposure",
+      "description": "API returns more data than needed",
+      "attack_vector": "Response inspection, schema analysis",
+      "impact": "Sensitive data leakage",
+      "likelihood": 4,
+      "severity": 3,
+      "risk_score": 12,
+      "risk_level": "High",
+      "dread": {
+        "damage": 6,
+        "reproducibility": 8,
+        "exploitability": 8,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 6.8
+      },
+      "mitigations": [
+        "Implement field-level access control",
+        "Use GraphQL with depth limiting",
+        "Apply response filtering based on role",
+        "Audit API responses for sensitive fields"
+      ]
+    },
+    {
+      "category": "Denial of Service",
+      "name": "DDoS Attack",
+      "description": "Attacker floods network with traffic",
+      "attack_vector": "Volumetric attacks, application layer attacks",
+      "impact": "Complete service unavailability",
+      "likelihood": 3,
+      "severity": 4,
+      "risk_score": 12,
+      "risk_level": "High",
+      "dread": {
+        "damage": 8,
+        "reproducibility": 5,
+        "exploitability": 6,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 6.2
+      },
+      "mitigations": [
+        "Deploy CDN with DDoS protection",
+        "Implement rate limiting at edge",
+        "Use anycast DNS distribution",
+        "Have incident response runbook ready"
+      ]
+    },
+    {
+      "category": "Denial of Service",
+      "name": "API Rate Limit Bypass",
+      "description": "Attacker circumvents rate limiting",
+      "attack_vector": "Distributed requests, header spoofing",
+      "impact": "Service degradation, resource exhaustion",
+      "likelihood": 3,
+      "severity": 3,
+      "risk_score": 9,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 6,
+        "reproducibility": 5,
+        "exploitability": 6,
+        "affected_users": 5,
+        "discoverability": 7,
+        "total": 5.8
+      },
+      "mitigations": [
+        "Implement layered rate limiting",
+        "Use token bucket or leaky bucket algorithms",
+        "Rate limit by user, IP, and API key",
+        "Deploy API gateway with DoS protection"
+      ]
+    },
+    {
+      "category": "Tampering",
+      "name": "Request Manipulation",
+      "description": "Attacker modifies API requests in transit",
+      "attack_vector": "Man-in-the-middle, proxy interception",
+      "impact": "Data corruption, unauthorized actions",
+      "likelihood": 2,
+      "severity": 4,
+      "risk_score": 8,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 8,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 5,
+        "discoverability": 4,
+        "total": 5.2
+      },
+      "mitigations": [
+        "Enforce TLS 1.3 for all connections",
+        "Implement request signing (HMAC)",
+        "Use certificate pinning for mobile apps",
+        "Validate request integrity on server"
+      ]
+    },
+    {
+      "category": "Information Disclosure",
+      "name": "Network Traffic Interception",
+      "description": "Attacker captures unencrypted traffic",
+      "attack_vector": "ARP spoofing, rogue access points, packet sniffing",
+      "impact": "Credential theft, data exposure",
+      "likelihood": 2,
+      "severity": 4,
+      "risk_score": 8,
+      "risk_level": "Medium",
+      "dread": {
+        "damage": 8,
+        "reproducibility": 5,
+        "exploitability": 4,
+        "affected_users": 5,
+        "discoverability": 4,
+        "total": 5.2
+      },
+      "mitigations": [
+        "Enforce TLS everywhere (no HTTP)",
+        "Implement HSTS with preloading",
+        "Use mutual TLS for service-to-service",
+        "Deploy network segmentation"
+      ]
+    }
+  ]
+}

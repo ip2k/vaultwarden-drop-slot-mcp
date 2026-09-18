@@ -1,0 +1,12 @@
+{
+  "host": "0.0.0.0",
+  "port": 8443,
+  "worker_port": 8444,
+  "cert_file": "/tls/server.crt",
+  "key_file": "/tls/server.key",
+  "auth_file": "/config/auth.json",
+  "database": "/state/queue.sqlite",
+  "recipients": [],
+  "retention_hours": 168,
+  "max_records": 100000
+}

@@ -1,0 +1,11 @@
+.git
+node_modules
+dist
+secrets
+state
+.env*
+*.tgz
+*.sqlite*
+*.key
+*.pem
+coverage

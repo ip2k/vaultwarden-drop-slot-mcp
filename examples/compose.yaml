@@ -1,0 +1,58 @@
+name: vaultwarden-drop-slot
+services:
+  inbox:
+    image: vaultwarden-drop-slot-mcp:0.1.0
+    build: { context: .., target: runtime }
+    command: [inbox, /config/inbox.json]
+    ports: ["127.0.0.1:8443:8443"]
+    volumes:
+      - ./config/inbox:/config:ro
+      - ./secrets/inbox-tls:/tls:ro
+      - inbox-state:/state
+    networks: [ingress, deposits]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    ulimits: { core: 0 }
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 64
+    restart: unless-stopped
+    logging: { driver: local, options: { max-size: 10m, max-file: '3' } }
+    healthcheck:
+      test: [CMD, node, -e, "require('https').get('https://localhost:8443/healthz',{ca:require('fs').readFileSync('/tls/ca.crt')},r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  importer:
+    profiles: [importer]
+    image: vaultwarden-drop-slot-importer:0.1.0
+    build: { context: .., target: importer }
+    command: [importer, /config/importer.json]
+    depends_on: { inbox: { condition: service_healthy } }
+    volumes:
+      - ./config/importer:/config:ro
+      - ./secrets/importer:/run/secrets:ro
+      - ./secrets/importer-ca:/tls:ro
+      - importer-state:/state
+      - bw-state:/bw
+    networks: [deposits, vault]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    ulimits: { core: 0 }
+    mem_limit: 768m
+    cpus: 1
+    pids_limit: 64
+    restart: unless-stopped
+    logging: { driver: local, options: { max-size: 10m, max-file: '3' } }
+networks:
+  ingress: {}
+  deposits: { internal: true }
+  vault: {}
+volumes:
+  inbox-state: {}
+  importer-state: {}
+  bw-state: {}

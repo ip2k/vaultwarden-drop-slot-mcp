@@ -1,0 +1,31 @@
+name: drop-slot-acceptance
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.37.3@sha256:1587c45feaa479f1f5e8af3b00eded36bff77bcf1880cf8dbf0541706dd470e0
+    environment:
+      DOMAIN: https://localhost:18443
+      SIGNUPS_ALLOWED: 'true'
+      SIGNUPS_VERIFY: 'false'
+      LOG_LEVEL: error
+      ROCKET_WORKERS: '2'
+    tmpfs: ['/data:size=256m,mode=0755']
+    mem_limit: 512m
+    cpus: 1
+    networks: [acceptance]
+    labels: {lan.project: vaultwarden-drop-slot-mcp, lan.session: acceptance}
+    healthcheck:
+      test: [CMD, /healthcheck.sh]
+      interval: 3s
+      timeout: 2s
+      retries: 30
+  acceptance:
+    image: vault-drop-slot-acceptance:0.1.0
+    build: {context: .., target: acceptance}
+    depends_on: {vaultwarden: {condition: service_healthy}}
+    mem_limit: 2g
+    cpus: 2
+    shm_size: 256m
+    networks: [acceptance]
+    labels: {lan.project: vaultwarden-drop-slot-mcp, lan.session: acceptance}
+networks:
+  acceptance: {internal: true}

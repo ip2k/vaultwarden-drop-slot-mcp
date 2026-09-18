@@ -1,0 +1,12 @@
+{
+  "host": "0.0.0.0",
+  "port": 8445,
+  "cert_file": "/tls/server.crt",
+  "key_file": "/tls/server.key",
+  "resource": "https://mcp.example.com/mcp",
+  "issuer": "https://identity.example.com/realms/drop-slot",
+  "jwks_url": "https://identity.example.com/realms/drop-slot/protocol/openid-connect/certs",
+  "algorithm": "RS256",
+  "bindings_file": "/config/bindings.json",
+  "allowed_origins": []
+}
