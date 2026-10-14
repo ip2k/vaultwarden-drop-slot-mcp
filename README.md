@@ -29,9 +29,11 @@ keep its account and host private. Secrets included in AI tool arguments can
 still be seen by the AI provider. Use the CLI or Node module directly when a
 script can generate and deposit a secret without involving the model.
 
-**Source release 0.1.0.** Install from this repository or a locally packed npm
-tarball; the package is **not published to the npm registry yet**. Containers
-are built locally. Original code is Apache-2.0. This is an independent project,
+**Release 0.1.0.** Install from npm (`npm install vaultwarden-drop-slot-mcp`,
+or run `npx -y vaultwarden-drop-slot-mcp`), from this repository, or from a
+locally packed tarball. The MCP server is also listed in the
+[MCP Registry](https://registry.modelcontextprotocol.io) as
+`io.github.ip2k/vaultwarden-drop-slot-mcp`. Containers are built locally. Original code is Apache-2.0. This is an independent project,
 not affiliated with Bitwarden or Vaultwarden. See the
 [verification record](docs/VERIFICATION.md) for tested behavior and limits.
 
@@ -121,9 +123,9 @@ npm run build
 node dist/cli.js --help
 ```
 
-For a Node application, run `npm pack` here and install the resulting `.tgz`
-with `npm install /absolute/path/vaultwarden-drop-slot-mcp-0.1.0.tgz`. You do
-not need an npm registry release to use the module or executable.
+For a Node application, `npm install vaultwarden-drop-slot-mcp`. To use a
+local build instead, run `npm pack` here and install the resulting `.tgz` with
+`npm install /absolute/path/vaultwarden-drop-slot-mcp-0.1.0.tgz`.
 
 ## What a receipt means
 

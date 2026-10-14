@@ -46,8 +46,8 @@ to a configured writer. No OAuth token is forwarded to the inbox.
 The module exports the producer client. The ordinary image can serve the inbox
 or MCP adapter. The optional importer target includes a separately licensed,
 unmodified OSS Bitwarden CLI executable; there is no CLI in the npm tarball.
-Public npm/repository publication and importer image redistribution are separate
-release steps. Runtime has no dependency on the developer's LAN.
+The npm package and repository are public (0.1.0 published 2026-10-14);
+importer image redistribution is a separate release step. Runtime has no dependency on the developer's LAN.
 
 `.github/workflows/release.yml` publishes a `vX.Y.Z` tag (or a manual run on
 main) to npm with Trusted Publishing (GitHub OIDC, no token), then to the MCP
