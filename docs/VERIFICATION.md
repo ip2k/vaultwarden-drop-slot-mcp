@@ -46,8 +46,9 @@ tested locally; deployments still need a compatible issuer, client registration
 and reachable HTTPS endpoint. Arm64 image execution and specific mobile/desktop Bitwarden
 app-version checks have not been run. Do not extend the tested compatibility claim to them.
 
-Source is published on GitHub. npm registry publication and public importer-image
-redistribution are separate release steps, not performed by building this package. The optional GPL CLI binary is absent from the npm
+Source is published on GitHub, and 0.1.0 is on npm (published 2026-10-14) and
+in the MCP Registry. Public importer-image redistribution is a separate release
+step, not performed by building this package. The optional GPL CLI binary is absent from the npm
 package and default image; public importer distribution needs a complete-source
 compliance procedure described in DEPENDENCIES.md.
 
