@@ -1,5 +1,11 @@
 # vaultwarden-drop-slot-mcp
 
+**MCP server, CLI and Node.js module for write-only credential deposits into a
+self-hosted Vaultwarden (Bitwarden-compatible) vault.** AI agents such as Claude
+Code and Codex, and deployment scripts, can save new logins (passwords) and secure
+notes, encrypted with age before they reach the inbox, without a vault login that
+can read existing secrets.
+
 [![Verify](https://github.com/ip2k/vaultwarden-drop-slot-mcp/actions/workflows/verify.yml/badge.svg)](https://github.com/ip2k/vaultwarden-drop-slot-mcp/actions/workflows/verify.yml)
 
 ## TL;DR

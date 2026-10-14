@@ -49,6 +49,14 @@ unmodified OSS Bitwarden CLI executable; there is no CLI in the npm tarball.
 Public npm/repository publication and importer image redistribution are separate
 release steps. Runtime has no dependency on the developer's LAN.
 
+`.github/workflows/release.yml` publishes a `vX.Y.Z` tag (or a manual run on
+main) to npm with Trusted Publishing (GitHub OIDC, no token), then to the MCP
+Registry as `io.github.ip2k/vaultwarden-drop-slot-mcp` from `server.json`, then
+creates the GitHub release. It refuses to run unless package.json,
+package-lock.json, server.json and the MCP server version in `src/mcp.ts` agree.
+The first npm publish is done by the owner by hand, because a Trusted Publisher
+can only be configured for a package that already exists.
+
 ## Tested CLI compatibility pin
 
 OSS CLI 2026.9.0 failed password login against a fresh, stock Vaultwarden 1.37.3
