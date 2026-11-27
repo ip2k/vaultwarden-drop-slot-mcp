@@ -67,3 +67,30 @@ items. Pin 2026.8.0 and its published archive hashes; do not silently upgrade or
 relax TLS to bypass a compatibility failure. Re-run the acceptance harness when
 changing either upstream pin. This is an observed compatibility difference,
 not a confirmed attribution of the upstream defect.
+
+## Hidden terminal prompt for `vault-drop`
+
+Candidates considered:
+- `node:readline` with a muted output stream.
+- The `read` package (npm, ISC).
+- `@inquirer/password`.
+
+All three return strings. readline also keeps a line history in memory. None of
+them refuses a multi-line paste, and that refusal matters: in raw mode, text
+after the first newline would stay in the terminal queue and run as shell
+input when the command exits.
+
+The command therefore uses a small raw-mode reader in `src/drop.ts`, bounded
+to these rules:
+- One fixed 64 KiB buffer, zeroed afterwards.
+- Strict UTF-8 decoding, so a lossy decode cannot silently change the secret.
+- Editing keys: Backspace by whole code point, Ctrl-U, and escape sequences
+  ignored.
+- Ctrl-C and Ctrl-D cancel.
+- A 50 ms drain after Enter, to detect a pasted second line.
+
+This keeps the production dependency inventory unchanged. A real-pty test
+proves the kernel echo stays off. Delivery waits for the writer's own receipt
+to reach `imported`. Transport errors while waiting are retried until the
+deadline; any other error ends the wait. A deposit retries with the same
+request UUID, so a retry resends the identical spooled ciphertext.

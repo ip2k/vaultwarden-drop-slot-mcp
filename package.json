@@ -9,7 +9,8 @@
     "node": ">=24.2.0"
   },
   "bin": {
-    "vaultwarden-drop-slot-mcp": "dist/cli.js"
+    "vaultwarden-drop-slot-mcp": "dist/cli.js",
+    "vault-drop": "dist/vault-drop.js"
   },
   "exports": {
     ".": {

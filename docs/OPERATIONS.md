@@ -53,7 +53,8 @@ tombstones while producers might retry them.
 The producer spool contains ciphertext only, is bounded at 10,000 entries and
 retains envelopes for retries. Remove entries only when the application no longer
 needs to retry them. Re-encrypting the same request UUID after deleting its spool
-entry produces a 409 rather than silently replacing a prior item.
+entry produces a 409 rather than silently replacing a prior item. `vault-drop`
+and `DepositClient.forget()` remove an entry only after its receipt is `imported`.
 
 ## Ambiguous delivery
 
