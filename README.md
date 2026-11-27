@@ -186,6 +186,71 @@ retries are no longer needed; it is bounded at 10,000 entries.
 Tools return receipts only. Keep tokens in host configuration; never put them in
 prompts, tool arguments, or checked-in MCP settings.
 
+## Store a secret from your terminal: `vault-drop`
+
+`vault-drop` saves one new secret and tells you once the importer has verified
+it in the vault. There's no web sign-in, and the secret never goes in argv,
+environment variables or shell history:
+
+```console
+$ vault-drop "Example API key"
+Secret for "Example API key" (hidden; paste, then Enter):
+✓ Example API key stored and verified in the vault
+```
+
+- **Hidden prompt.** When stdin is a terminal, nothing you type or paste is
+  echoed. Enter submits. Ctrl-C or Ctrl-D cancels without storing anything. A
+  paste of more than one line is refused, and the reader keeps draining the
+  terminal for 150 ms after Enter, so a stray second line from a normal paste
+  doesn't run as a shell command afterwards. This is best effort: text
+  arriving later is not caught.
+- **Piped input.** `your-secret-generator | vault-drop "New service"` reads
+  stdin to the end and removes exactly one trailing newline. Empty input is
+  refused.
+- **Options.**
+  - `--username <name>` and `--url <url>` (repeatable) fill in a login.
+  - `--note` stores a secure note instead. At the prompt, paste and press
+    Ctrl-D; multi-line input is kept.
+  - `--timeout <sec>` changes the default 120 s wait for verified import.
+  - `--no-wait` prints the receipt right after deposit.
+  - `--status <receipt>` checks an earlier deposit.
+- **Config.** `vault-drop` uses an enrolled client config, the same file the
+  local MCP adapter uses. It looks for `--config <path>` first, then
+  `$VAULT_DROP_CONFIG`, then
+  `$XDG_CONFIG_HOME/vaultwarden-drop-slot/client.json` (by default
+  `~/.config/vaultwarden-drop-slot/client.json`).
+
+The one-line result names the stage that failed and has its own exit code:
+
+| Exit | Meaning |
+| --- | --- |
+| 0 | Stored and verified (with `--no-wait`: deposited) |
+| 2 | Usage error |
+| 3 | Input error (empty, too long, multi-line paste, not UTF-8) |
+| 4 | Client config or writer token unreadable |
+| 5 | Deposit or status check failed |
+| 6 | The importer reported `failed` |
+| 7 | Deposited but not yet verified; the importer may be locked. Re-check with `vault-drop --status <receipt>` |
+| 130 | Interrupted |
+
+A verified deposit removes its own ciphertext spool entry; an unverified one
+keeps it for retries. The input is collected in one fixed buffer that is zeroed
+afterwards, but the payload must become a JavaScript string before encryption.
+Clearing memory is therefore best effort, not a guarantee.
+
+To install, build the package, pack it and install the tarball globally, so the
+command doesn't depend on a checkout:
+
+```sh
+npm ci --ignore-scripts && npm test
+npm pack --pack-destination /tmp/vault-drop-pack
+npm install -g --ignore-scripts /tmp/vault-drop-pack/vaultwarden-drop-slot-mcp-0.1.0.tgz
+command -v vault-drop
+```
+
+Repeat these steps after updating the source. Once a release that includes
+`vault-drop` is on npm, `npm install -g vaultwarden-drop-slot-mcp` also works.
+
 ## CLI and Node module
 
 The `deposit` command reads `{request_id,payload}` JSON from stdin. A secret
@@ -215,7 +280,7 @@ console.log(receipt);
 ```
 
 `prepare()` writes a ciphertext-only spool entry; `submit()` sends that exact
-envelope. These are available separately for applications with their own retry
+envelope; `forget()` removes the entry once its receipt is `imported`. These are available separately for applications with their own retry
 logic. URLs in payloads are stored as data and are never fetched.
 
 ## Remote MCP

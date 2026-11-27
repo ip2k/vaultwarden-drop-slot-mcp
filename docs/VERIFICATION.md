@@ -29,6 +29,18 @@ CLI 2026.9.0 failed login after successful authentication in the same disposable
 setup, before project imports. The working 2026.8.0 release is explicitly pinned;
 see DECISIONS.md for the compatibility decision.
 
+## `vault-drop` terminal command (2026-11-26)
+
+| Check | Result |
+| --- | --- |
+| TypeScript build and 25 automated tests | Pass on Node 26.13.1/macOS |
+| Independent review (three reviewers, each finding verified by a refuter) | Five findings confirmed and fixed: Ctrl-D submitted partial input; 4xx rejections looked transient; an ambiguous-deposit warning could be lost; the paste-drain claim was overstated. None refuted |
+| Input handling | Pass for piped input: exactly one trailing LF/CRLF removed; empty, oversized and non-UTF-8 input refused; chunks zeroed. Pass for TTY input: raw mode set and restored; Backspace, Ctrl-U and escape sequences; Ctrl-C/Ctrl-D cancel, including after partial input; multi-line paste refused; notes end at Ctrl-D |
+| Wait loop (states × events table in `test/drop.test.mjs`) | Pass. Queued/importing continue; imported, failed, transient retry, permanent error, timeout and interrupt each covered |
+| Command against the test inbox | Pass. Verified import prints one line and removes the spool entry. Failure, timeout, `--no-wait`, `--status`, revoked token, usage and config errors name their stage and exit code. The config, writer token mode and CA file are checked before stdin is read. The planted secret is absent from stdout, stderr and the spool |
+| Real pseudo-terminal | Pass. The planted secret is never echoed and Enter submits it. The test fails when raw mode is disabled (checked by mutation) |
+| Private installation, real vault | Pass. One synthetic login piped from `openssl rand` into the installed command returned "stored and verified" (receipt `imported`) in 26 s |
+
 ## Deployment and release boundaries
 
 The first private installation is enrolled and delivering to a dedicated

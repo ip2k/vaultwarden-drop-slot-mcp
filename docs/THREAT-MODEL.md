@@ -20,6 +20,20 @@ threat model, not a third-party audit or certification.
    is not client-device encryption. It forwards using a separately configured
    writer token, never a user's OAuth token.
 
+The `vault-drop` terminal command is a producer like the others (boundary 1).
+- It takes the secret only from stdin: a raw-mode prompt with echo off, set
+  before the prompt is shown, or a pipe. The secret never goes in argv,
+  environment variables or logs.
+- In single-line mode it refuses a multi-line paste and drains the terminal
+  for 150 ms after Enter, so leftover lines from a normal paste don't run as
+  shell input. This is best effort: bytes arriving after the window are not
+  caught, and Node offers no `tcflush`.
+- Its output is a fixed message per stage and a receipt UUID. It prints no
+  validation detail, response body or CLI stderr.
+- A real-pty test checks that the kernel never echoes a planted secret.
+- Zeroing memory is best effort. The input buffer is wiped, but the payload
+  must become a JavaScript string before encryption.
+
 The machine administrator and importer are trusted. Container separation is
 not a defense against host root or someone with Docker/cluster-admin access.
 Remote MCP is opt-in; local stdio plus encrypted HTTPS deposits is the default.

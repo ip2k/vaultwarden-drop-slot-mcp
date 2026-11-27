@@ -12,7 +12,7 @@ export class DepositClient {
     parse(uuid, requestId); parse(payloadSchema, payload);
     const c = this.config;
     mkdirSync(c.spool_dir, { recursive: true, mode: 0o700 });
-    const file = join(c.spool_dir, `${digest(`${c.inbox_url}\n${c.writer_id}\n${requestId}`)}.json`);
+    const file = this.spoolFile(requestId);
     // Reusing an ID means retrying the original item, even if new arguments differ.
     // No plaintext hash is persisted (it would enable offline password guessing).
     try { return parse(envelopeSchema, JSON.parse(readFileSync(file, 'utf8'))); }
@@ -39,6 +39,15 @@ export class DepositClient {
     return parse(receiptSchema, await jsonRequest(c.inbox_url, '/v1/deposits', readSecret(c.token_file), 'POST', envelope, c.ca_file, c));
   }
   async deposit(requestId: string, payload: Payload): Promise<Receipt> { return this.submit(await this.prepare(requestId, payload)); }
+  /** Remove a spooled envelope once its delivery is verified; reusing the request ID afterwards is a 409. */
+  forget(requestId: string): void {
+    parse(uuid, requestId);
+    try { unlinkSync(this.spoolFile(requestId)); }
+    catch (err) { if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw new SafeError('spool_unavailable'); }
+  }
+  private spoolFile(requestId: string): string {
+    const c = this.config; return join(c.spool_dir, `${digest(`${c.inbox_url}\n${c.writer_id}\n${requestId}`)}.json`);
+  }
   async status(receipt: string): Promise<Receipt> {
     const c = this.config; parse(uuid, receipt);
     return parse(receiptSchema, await jsonRequest(c.inbox_url, `/v1/receipts/${receipt}`, readSecret(c.token_file), 'GET', undefined, c.ca_file, c));
