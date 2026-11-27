@@ -87,9 +87,12 @@ to these rules:
 - Editing keys: Backspace by whole code point, Ctrl-U, and escape sequences
   ignored.
 - Ctrl-C and Ctrl-D cancel.
-- A 50 ms drain after Enter, to detect a pasted second line.
+- A best-effort 150 ms drain after Enter, to detect a pasted second line.
 
-This keeps the production dependency inventory unchanged. A real-pty test
+This keeps the production dependency inventory unchanged. For a 4xx response,
+the transport keeps the inbox's allowlisted public error code (for example
+`unknown_key` or `not_found`), so a definitive rejection is never retried as
+if it were a transient `delivery_unavailable`. A real-pty test
 proves the kernel echo stays off. Delivery waits for the writer's own receipt
 to reach `imported`. Transport errors while waiting are retried until the
 deadline; any other error ends the wait. A deposit retries with the same

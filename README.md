@@ -200,8 +200,10 @@ Secret for "Example API key" (hidden; paste, then Enter):
 
 - **Hidden prompt.** When stdin is a terminal, nothing you type or paste is
   echoed. Enter submits. Ctrl-C or Ctrl-D cancels without storing anything. A
-  paste of more than one line is refused, so a stray second line can't run as
-  a shell command afterwards.
+  paste of more than one line is refused, and the reader keeps draining the
+  terminal for 150 ms after Enter, so a stray second line from a normal paste
+  doesn't run as a shell command afterwards. This is best effort: text
+  arriving later is not caught.
 - **Piped input.** `your-secret-generator | vault-drop "New service"` reads
   stdin to the end and removes exactly one trailing newline. Empty input is
   refused.

@@ -7,6 +7,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPiped, readHidden, waitForImport, main, EXIT } from '../dist/drop.js';
 import { SafeError } from '../dist/protocol.js';
+import { generateIdentity, identityToRecipient } from 'age-encryption';
+import { fingerprint } from '../dist/protocol.js';
 import { fixture, save, planted } from './helpers.mjs';
 
 const bin = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist', 'vault-drop.js');
@@ -67,6 +69,7 @@ test('TTY refuses empty input, cancels on Ctrl-C/Ctrl-D, and refuses a multi-lin
   assert.equal((await typed(['\r'])).error, 'empty_input');
   const cancelled = await typed(['half\x03']); assert.equal(cancelled.error, 'cancelled'); assert.deepEqual(cancelled.input.modes, [true, false]);
   assert.equal((await typed(['\x04'])).error, 'cancelled');
+  assert.equal((await typed(['par\x04'])).error, 'cancelled', 'Ctrl-D never submits partial input');
   assert.equal((await typed(['line1\rline2\r'])).error, 'multiline_input');
   assert.equal((await typed(['line1\n', 'line2\n'])).error, 'multiline_input');
 });
@@ -183,6 +186,24 @@ test('vault-drop secure notes keep their lines', async () => {
   try {
     const r = await command(f, ['Recovery codes', '--note'], 'code-1\ncode-2\n', { client: () => client });
     assert.equal(r.code, EXIT.ok); assert.deepEqual(seen, { type: 'secure_note', name: 'Recovery codes', notes: 'code-1\ncode-2' });
+  } finally { await f.close(); }
+});
+
+test('definitive inbox rejections are not retried as transient, and ambiguity survives a later error', async () => {
+  const f = await fixture();
+  try {
+    const recipient = await identityToRecipient(await generateIdentity());
+    const r = await command({ ...f, client: { ...f.client, recipient, key_id: fingerprint(recipient) } }, ['Wrong key'], planted);
+    assert.equal(r.code, EXIT.deposit); assert.match(r.stderr, /^✗ Wrong key: deposit failed: the inbox does not accept the pinned recipient key; re-enroll this client\n$/);
+
+    const unknown = await command(f, ['--status', '00000000-0000-4000-8000-000000000000'], '');
+    assert.equal(unknown.code, EXIT.deposit); assert.match(unknown.stderr, /no such receipt/);
+
+    let attempt = 0;
+    const flaky = { deposit: async () => { if (attempt++ === 0) throw new SafeError('transport_failed', 503); throw new SafeError('unauthorized', 401); }, status: async () => { throw new Error('unused'); }, forget: () => {} };
+    const ambiguous = await command(f, ['Flaky'], planted, { client: () => flaky });
+    assert.equal(ambiguous.code, EXIT.deposit); assert.equal(attempt, 2);
+    assert.match(ambiguous.stderr, /rejected the writer token \(expired or revoked\); an earlier attempt may still have reached the inbox and be queued/);
   } finally { await f.close(); }
 });
 

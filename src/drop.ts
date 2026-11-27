@@ -62,7 +62,7 @@ export async function readPiped(input: AsyncIterable<Buffer | string>): Promise<
  * Multi-line mode (secure notes) ends at Ctrl-D. Ctrl-C cancels.
  */
 export function readHidden(input: InputStream, prompt: Output, options: { multiline: boolean; text: string; settleMs?: number }): Promise<string> {
-  const secret = new SecretBuffer(); const settleMs = options.settleMs ?? 50;
+  const secret = new SecretBuffer(); const settleMs = options.settleMs ?? 150;
   let escape: 'none' | 'esc' | 'csi' | 'ss3' = 'none'; let lastCR = false; let done = false; let overflow = false;
   let restored = false;
   const restore = () => { if (restored) return; restored = true; input.removeListener('data', onData); try { input.setRawMode?.(false); } catch {} input.pause(); };
@@ -93,7 +93,7 @@ export function readHidden(input: InputStream, prompt: Output, options: { multil
         if (byte === 0x0a && lastCR) { lastCR = false; continue; }
         lastCR = byte === 0x0d;
         if (byte === 0x03) { finish(new SafeError('cancelled')); continue; }
-        if (byte === 0x04) { if (!options.multiline && secret.length === 0) finish(new SafeError('cancelled')); else finish(); continue; }
+        if (byte === 0x04) { finish(options.multiline ? undefined : new SafeError('cancelled')); continue; }
         if (byte === 0x0d || byte === 0x0a) { if (options.multiline) secret.push(0x0a); else finish(); continue; }
         if (byte === 0x7f || byte === 0x08) { secret.backspace(); continue; }
         if (byte === 0x15) { secret.clear(); continue; }
@@ -176,7 +176,7 @@ const EXPLAIN: Record<string, string> = {
   unauthorized: 'the inbox rejected the writer token (expired or revoked)', quota_exceeded: "this writer's deposit quota is used up; try again later",
   request_conflict: 'the inbox already holds a different item with this request ID', unknown_key: 'the inbox does not accept the pinned recipient key; re-enroll this client',
   item_too_large: 'the item is too large', transport_failed: 'could not reach the inbox', delivery_unavailable: 'the inbox returned an error',
-  invalid_response: 'the inbox returned an unexpected response', spool_unavailable: 'the local ciphertext spool is not writable', spool_full: 'the local ciphertext spool is full',
+  invalid_response: 'the inbox returned an unexpected response', invalid_envelope: 'the inbox rejected the encrypted item', spool_unavailable: 'the local ciphertext spool is not writable', spool_full: 'the local ciphertext spool is full',
   not_found: 'no such receipt for this writer', invalid_input: 'the item was rejected as invalid',
 };
 const explain = (code: string) => EXPLAIN[code] ?? 'unexpected error';
@@ -244,12 +244,13 @@ export async function main(argv: string[], deps: DropDeps): Promise<number> {
   deps.onDeposit?.();
   let receipt: Receipt | undefined;
   // The client spools the ciphertext under this request ID, so every retry resends the identical envelope.
+  let maybeDelivered = false;
   for (let attempt = 1; ; attempt++) {
     try { receipt = await client.deposit(requestId, payload); break; }
     catch (err) {
-      const code = codeOf(err);
+      const code = codeOf(err); maybeDelivered ||= TRANSIENT.has(code);
       if (!TRANSIENT.has(code) || attempt >= 3) {
-        const ambiguous = TRANSIENT.has(code) ? '; it may still have reached the inbox, so check the vault before trying again' : '';
+        const ambiguous = maybeDelivered ? '; an earlier attempt may still have reached the inbox and be queued (a locked importer delays it, so the vault may not show it yet); wait and check the vault before storing it again' : '';
         return fail('deposit', code, EXIT.deposit, ambiguous);
       }
       await sleep((deps.retryMs ?? 1000) * attempt).catch(() => {});

@@ -25,7 +25,9 @@ The `vault-drop` terminal command is a producer like the others (boundary 1).
   before the prompt is shown, or a pipe. The secret never goes in argv,
   environment variables or logs.
 - In single-line mode it refuses a multi-line paste and drains the terminal
-  first, so leftover lines can't run as shell input.
+  for 150 ms after Enter, so leftover lines from a normal paste don't run as
+  shell input. This is best effort: bytes arriving after the window are not
+  caught, and Node offers no `tcflush`.
 - Its output is a fixed message per stage and a receipt UUID. It prints no
   validation detail, response body or CLI stderr.
 - A real-pty test checks that the kernel never echoes a planted secret.
