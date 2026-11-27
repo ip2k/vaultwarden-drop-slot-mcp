@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PassThrough, Readable } from 'node:stream';
 import { spawn, execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { chmodSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPiped, readHidden, waitForImport, main, EXIT } from '../dist/drop.js';
@@ -167,6 +167,13 @@ test('vault-drop checks arguments and config before reading the secret, and name
     const stdin = untouched();
     const missing = await main(['x', '--config', join(f.dir, 'absent.json')], { stdin, stdout: sink(), stderr: sink(), env: {} });
     assert.equal(missing, EXIT.config); assert.equal(stdin.readableLength, Buffer.byteLength(planted), 'stdin was not consumed');
+    chmodSync(f.client.token_file, 0o644);
+    const loose = untouched(); const looseErr = sink();
+    const looseCode = await main(['x', '--config', join(f.dir, 'client.json')], { stdin: loose, stdout: sink(), stderr: looseErr, env: {} });
+    assert.equal(looseCode, EXIT.config); assert.match(looseErr.text, /writer token file is unreadable or not mode 0600/); assert.equal(loose.readableLength, Buffer.byteLength(planted));
+    chmodSync(f.client.token_file, 0o600);
+    const noCa = await command({ ...f, client: { ...f.client, ca_file: join(f.dir, 'absent-ca.crt') } }, ['x'], untouched());
+    assert.equal(noCa.code, EXIT.config); assert.match(noCa.stderr, /CA or client certificate file/);
 
     const empty = await command(f, ['Empty'], '\n');
     assert.equal(empty.code, EXIT.input); assert.match(empty.stderr, /^✗ Empty: input failed: no secret was entered/);

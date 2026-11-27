@@ -7,7 +7,8 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { setTimeout as delay } from 'node:timers/promises';
 import { DepositClient } from './client.js';
-import { clientSchema, readJson } from './config.js';
+import { accessSync, constants } from 'node:fs';
+import { clientSchema, readJson, readSecret, type ClientConfig } from './config.js';
 import { SafeError, type Payload, type Receipt } from './protocol.js';
 
 export const EXIT = { ok: 0, failure: 1, usage: 2, input: 3, config: 4, deposit: 5, import_failed: 6, timeout: 7, interrupted: 130 } as const;
@@ -143,6 +144,16 @@ export interface DropDeps {
   now?: () => number; sleep?: (ms: number, signal?: AbortSignal) => Promise<unknown>;
 }
 
+/** Check the writer token and CA files up front, so setup errors surface before the secret is read. */
+function preflight(config: ClientConfig): ClientConfig {
+  readSecret(config.token_file); // Throws secret_unavailable; the value is discarded.
+  for (const file of [config.ca_file, config.client_cert_file].filter((f): f is string => Boolean(f))) {
+    try { accessSync(file, constants.R_OK); } catch { throw new SafeError('ca_unavailable'); }
+  }
+  if (config.client_key_file) readSecret(config.client_key_file);
+  return config;
+}
+
 export function defaultConfigPath(env: NodeJS.ProcessEnv): string {
   return env.VAULT_DROP_CONFIG || join(env.XDG_CONFIG_HOME || join(homedir(), '.config'), 'vaultwarden-drop-slot', 'client.json');
 }
@@ -172,7 +183,7 @@ const EXPLAIN: Record<string, string> = {
   input_not_utf8: 'the input is not valid UTF-8', multiline_input: 'the paste had more than one line; pipe multi-line secrets in, or use --note',
   cancelled: 'cancelled; nothing was stored', terminal_unavailable: 'could not switch the terminal to hidden input; pipe the secret in instead',
   secret_too_long: `a login password is limited to ${LIMITS.password} characters; use --note for longer secrets`, note_too_long: `a secure note is limited to ${LIMITS.note} characters`,
-  invalid_configuration: 'the client config is missing or invalid', secret_unavailable: 'the writer token file is unreadable or not mode 0600',
+  invalid_configuration: 'the client config is missing or invalid', ca_unavailable: 'a CA or client certificate file named in the config is unreadable', secret_unavailable: 'the writer token file is unreadable or not mode 0600',
   unauthorized: 'the inbox rejected the writer token (expired or revoked)', quota_exceeded: "this writer's deposit quota is used up; try again later",
   request_conflict: 'the inbox already holds a different item with this request ID', unknown_key: 'the inbox does not accept the pinned recipient key; re-enroll this client',
   item_too_large: 'the item is too large', transport_failed: 'could not reach the inbox', delivery_unavailable: 'the inbox returned an error',
@@ -199,7 +210,7 @@ export async function main(argv: string[], deps: DropDeps): Promise<number> {
   const timeoutSeconds = values.timeout === undefined ? 120 : Number(values.timeout);
   if (!Number.isInteger(timeoutSeconds) || timeoutSeconds < 1 || timeoutSeconds > 3600) return usage('--timeout must be a whole number of seconds from 1 to 3600');
   const configPath = values.config ?? defaultConfigPath(deps.env);
-  const open = deps.client ?? ((path: string) => new DepositClient(readJson(path, clientSchema)));
+  const open = deps.client ?? ((path: string) => new DepositClient(preflight(readJson(path, clientSchema))));
 
   if (values.status !== undefined) {
     if (positionals.length) return usage('--status takes only a receipt');
